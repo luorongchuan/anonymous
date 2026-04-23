@@ -31,7 +31,6 @@ from Data.data import (
 def build_grpo_config(args) -> GRPOConfig:
     bf16, fp16 = bf16_fp16_flags()
     return GRPOConfig(
-        # Training
         learning_rate=args.training.learning_rate,
         weight_decay=args.training.weight_decay,
         max_grad_norm=args.training.max_grad_norm,
@@ -48,18 +47,15 @@ def build_grpo_config(args) -> GRPOConfig:
         # Precision
         bf16=bf16,
         fp16=fp16,
-        # Generation
         num_generations=args.generation.num_generations,
         max_prompt_length=args.generation.max_prompt_length,
         max_completion_length=args.generation.max_completion_length,
-        # Algorithm
         loss_type=args.algorithm.loss_type,
         epsilon=args.algorithm.epsilon,
         epsilon_high=args.algorithm.epsilon_high,
         mask_truncated_completions=bool(args.algorithm.mask_truncated_completions),
         scale_rewards=args.algorithm.scale_rewards,
         importance_sampling_level=args.algorithm.importance_sampling_level,
-        # Logging / IO
         logging_steps=args.logging.logging_steps,
         save_steps=args.logging.save_steps,
         report_to=args.logging.report_to,
@@ -69,18 +65,13 @@ def build_grpo_config(args) -> GRPOConfig:
 
 def main() -> None:
     args = parse_args()
-
-    # WandB Login
     if args.logging.wandb_api_key:
         wandb.login(args.logging.wandb_api_key)
 
-    # Output path
     out = Path(args.core.model_dir).expanduser()
     out.mkdir(parents=True, exist_ok=True)
 
     training_args = build_grpo_config(args)
-
-    # Model loading
     model_name = args.core.model_name
     lora_rank = args.core.lora_rank
     max_seq_length = args.core.max_seq_length
@@ -93,7 +84,6 @@ def main() -> None:
         load_in_4bit=load_in_4bit,
     )
 
-    # Dataset loading
     dataset_name = args.core.dataset_name.lower()
     dataset_split = args.core.dataset_split
 
@@ -106,7 +96,6 @@ def main() -> None:
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}")
 
-    # Reference model
     ref_free = args.dpo.ref_free
     ref_model = None
     if not ref_free:
@@ -116,7 +105,6 @@ def main() -> None:
             load_in_4bit=load_in_4bit,
         )
 
-    # Reward functions
     use_calibration = args.core.calibration
     if use_calibration:
         reward_funcs = [
@@ -134,7 +122,6 @@ def main() -> None:
             correctness_reward_func,
         ]
 
-    # Trainer selection
     trainer_type = args.core.trainer_type
     TrainerCls = DWCAL_GRPO_Trainer if trainer_type == "dwcal_grpo" else GRPOTrainer
 
@@ -149,16 +136,16 @@ def main() -> None:
     if TrainerCls is DWCAL_GRPO_Trainer:
         trainer_kwargs.update(
             ref_model=ref_model,
-            # [Existing AMIR Args] - 全部改为从 args 读取
+
             lambda_strong=getattr(args.dpo, 'lambda_strong', 0.01),
             reward_margin=getattr(args.dpo, 'reward_margin', 2.0),
             beta_strong=getattr(args.dpo, 'beta_strong', 0.2),
             pair_mode=getattr(args.dpo, 'pair_mode', 'all'),
             max_pairs_per_group=getattr(args.dpo, 'max_pairs_per_group', None),
-            dpo_chunk_size=getattr(args.dpo, 'dpo_chunk_size', 8), # 【修正】不再硬编码
+            dpo_chunk_size=getattr(args.dpo, 'dpo_chunk_size', 8),
             ref_free=args.dpo.ref_free,
             
-            # [DWCAL Strong Branch Args]
+
             alpha_rank=getattr(args.dpo, 'alpha_rank', 0.5),
             alpha_len=getattr(args.dpo, 'alpha_len', 0.5),
             alpha_group=getattr(args.dpo, 'alpha_group', 0.5),
@@ -175,14 +162,11 @@ def main() -> None:
     trainer = TrainerCls(**trainer_kwargs)
     trainer.train()
 
-    # Save artifacts
     model.save_pretrained(out.as_posix())
     tokenizer.save_pretrained(out.as_posix())
     model.config.save_pretrained(out.as_posix())
     save_config_files(args, out)
 
-    # Push to Hub (可选，如果不需要推送到 HF 可注释掉)
-    # 注意：请确保替换真实的 HF_TOKEN 和 USERNAME，或者在环境变量中设置
     hf_token = "HF_TOKEN" 
     user = "HF-USERNAME"
     
