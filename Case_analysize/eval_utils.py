@@ -110,7 +110,6 @@ def evaluate_model_batched(model: PreTrainedModel, tokenizer: PreTrainedTokenize
         correct_count = 0
         avg_len = sum(gen_lengths) / num_samples
 
-        # --- 增强版实时日志输出 ---
         print("\n" + "#"*80)
         print(f" PROBLEM {i} ".center(80, "#"))
         print(f"QUERY: {prompt}")
@@ -118,7 +117,7 @@ def evaluate_model_batched(model: PreTrainedModel, tokenizer: PreTrainedTokenize
         print("-" * 80)
 
         for idx, (text, length, lp) in enumerate(zip(outputs, gen_lengths, mean_lps)):
-            # 提取预测答案和奖励
+
             extracted_ans, reward = answer_tag_reward_fn_for_orz(text, gt, fast=False)
             is_correct = (reward == 1.0)
             if is_correct: correct_count += 1
