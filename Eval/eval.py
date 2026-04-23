@@ -20,17 +20,12 @@ from Data.data import (
 
 def main() -> None:
     args = parse_args()
-
-    # ----------------------------
-    # 1. 初始化分布式环境
-    # ----------------------------
     rank = 0
     world_size = 1
     local_rank = 0
     is_main_process = True
     device = None
 
-    # 检测是否由 torchrun/accelerate 启动
     if "RANK" in os.environ and "WORLD_SIZE" in os.environ:
         rank = int(os.environ["RANK"])
         world_size = int(os.environ["WORLD_SIZE"])
@@ -48,7 +43,7 @@ def main() -> None:
             print(f"[Rank {rank}] Failed to init process group: {e}")
             raise
     else:
-        # 单卡模式 fallback
+
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if is_main_process:
             print(f"[Single GPU] Running on {device}")
@@ -85,18 +80,13 @@ def main() -> None:
     else:
         raise ValueError(f"Unknown dataset: {args.core.dataset_name}")
 
-    # ----------------------------
-    # 3. 数据分片 (核心逻辑)
-    # ----------------------------
     num_samples = len(test_dataset)
     
     if world_size > 1:
-        # 向上取整，确保所有数据都被覆盖
         samples_per_gpu = (num_samples + world_size - 1) // world_size
         start_idx = rank * samples_per_gpu
         end_idx = min(start_idx + samples_per_gpu, num_samples)
-        
-        # 如果当前 rank 超出了数据范围（例如数据少于卡数），则设为空
+
         if start_idx >= num_samples:
             test_dataset = Subset(test_dataset, [])
             if is_main_process:
@@ -110,11 +100,6 @@ def main() -> None:
         if is_main_process:
             print(f"[Single GPU] Processing all {num_samples} samples.")
 
-    # ----------------------------
-    # 4. Model loading
-    # ----------------------------
-    # 注意：这里使用的是上面正确分配的 device (包含 local_rank)
-    # 绝对不能再重新定义 device = torch.device("cuda"...)
     if is_main_process:
         print(f"[Rank {rank}] Loading model to {device} ...")
         
@@ -126,12 +111,6 @@ def main() -> None:
     )
     model.eval()
 
-    # ----------------------------
-    # 5. Evaluation
-    # ----------------------------
-    # 构造唯一的输出后缀，防止文件冲突
-    # 注意：你需要去 Eval/eval_utils.py 里修改函数签名以接收这个参数，
-    # 或者在该函数内部自动检测 rank。
     output_suffix = f"_rank{rank}" if world_size > 1 else ""
     
     if is_main_process:
@@ -144,17 +123,12 @@ def main() -> None:
             dataset=test_dataset,
             batch_size=8, 
             device=device,
-            progress=is_main_process, # 只有主进程显示进度条
-            # 如果 eval_utils 还没改，这行可能会报错，请先注释掉，见下方说明
-            # result_suffix=output_suffix 
+            progress=is_main_process,
         )
     except Exception as e:
         print(f"[Rank {rank}] Evaluation failed: {e}")
         raise
     finally:
-        # ----------------------------
-        # 6. 清理
-        # ----------------------------
         if world_size > 1:
             dist.destroy_process_group()
             if is_main_process:
