@@ -97,7 +97,6 @@ def main() -> None:
     else:
         if is_main_process:
             print(f"[Single GPU] Processing all {num_samples} samples.")
-
     if is_main_process:
         print(f"[Rank {rank}] Loading model to {device} ...")
         
