@@ -2,14 +2,6 @@
 
 # DWCAL-GRPO: Integrating Dual Preference Mechanisms into GRPO
 
-<p>
-  <a href="https://amirhosseinyari2002.github.io/"><b>Amir Hossein Yari</b></a>
-  ,
-  <a href="https://www.fajrikoto.com/home"><b>Fajri Koto</b></a>
-</p>
-
-[![arXiv](https://img.shields.io/badge/arXiv-2601.03661-b31b1b.svg)](https://arxiv.org/abs/2601.03661)
-
 </div>
 
 ---
