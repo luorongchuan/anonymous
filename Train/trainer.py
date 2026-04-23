@@ -19,15 +19,13 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
         beta_strong: float = 0.2,
         ref_free: bool = True,
         dpo_chunk_size: int = 8,
-        
-        # [DWCAL] Strong Branch Hyperparameters
+
         alpha_rank: float = 0.5,
         alpha_len: float = 0.5,
         alpha_group: float = 0.5,
         w_max: float = 2,
         group_quality_threshold: float = 0.5,
-        
-       # [DWCAL] Micro Branch Hyperparameters
+
         weak_margin: float = 0.15,
         lambda_weak: float = 0.01,
         weak_warmup_steps: int = 100,
@@ -52,16 +50,14 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
         self.alpha_group = alpha_group
         self.w_max = w_max
         self.group_quality_threshold = group_quality_threshold
-        
-        # Store DWCAL Micro Branch params
+
         self.weak_margin = float(weak_margin)
         self.lambda_weak_initial = float(lambda_weak)  
         self.lambda_weak = self.lambda_weak_initial    
         self.lambda_weak_min = 0.001                            
         self.weak_warmup_steps = int(weak_warmup_steps)
         self.beta_weak = float(beta_weak)
-        
-        # State variables
+
         self._dpo_cache = None
         self.global_step = 0
         self.current_lambda_weak = 0.0
@@ -178,7 +174,7 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
                 seq_logps[start:end] = logps_chunk
 
                 del out_chunk, logps_chunk, comp_lens_chunk
-                # 优化：移除循环内的 empty_cache，仅在函数外或必要时调用，提升速度
+
         return seq_logps
 
     def _generate_and_score_completions(self, inputs):
@@ -190,7 +186,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
         completion_ids = base_out["completion_ids"]
         completion_mask = base_out["completion_mask"]
 
-        # 统一长度，防止 x 和 mask 不匹配
         seq_len = min(prompt_ids.size(1) + completion_ids.size(1), prompt_mask.size(1) + completion_mask.size(1))
 
         prompt_completion_ids = torch.cat([prompt_ids, completion_ids], dim=1)[:, :seq_len]
@@ -295,7 +290,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
                 reject_logps.append(seq_logps_unique[r_idx])
             return torch.stack(chosen_logps), torch.stack(reject_logps)
 
-        # 【修复】统一处理 Reference Model，只计算一次
         ref_logps_map = {}
         if not self.ref_free and getattr(self, "ref_model", None) is not None:
             ref_dev = next(self.ref_model.parameters()).device
@@ -339,7 +333,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
                 
             return weighted_loss, len(pair_list)
 
-        # 5. Strong Branch
         strong_loss_val = 0.0
         s_count = 0
         
@@ -374,7 +367,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
             
             strong_loss_val, s_count = compute_weighted_loss(strong_pairs, self.beta_strong)
 
-        # 6. Micro Branch
         micro_loss_val = 0.0
         m_count = 0
         
@@ -393,7 +385,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
             
             micro_loss_val, m_count = compute_weighted_loss(micro_pairs, self.beta_weak)
 
-        # 7. Final Aggregation
         reg_loss = 0.0
         if s_count > 0:
             reg_loss += strong_loss_val * self.lambda_strong
@@ -402,7 +393,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
             
         mixed_loss = grpo_loss + reg_loss
 
-        # 8. Adaptive Lambda for Strong Branch
         if s_count > 0 and strong_loss_val > 0:
             grpo_val = float(grpo_loss.detach())
             dpo_val = float(strong_loss_val.detach())
@@ -417,7 +407,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
             elif r > target_high:
                 self.lambda_strong = max(lam_min, self.lambda_strong * down)
 
-        # 9. Adaptive Lambda for Micro Branch
         if m_count > 0 and micro_loss_val > 0:
             grpo_val = float(grpo_loss.detach())
             micro_val = float(micro_loss_val.detach())
@@ -436,15 +425,13 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
                     self.lambda_weak_min,
                     self.lambda_weak * down_m
                 )
-            
-            # Re-update current_lambda_weak after adjusting lambda_weak
+
             if self.global_step < self.weak_warmup_steps:
                 progress = self.global_step / self.weak_warmup_steps
                 self.current_lambda_weak = self.lambda_weak * progress
             else:
                 self.current_lambda_weak = self.lambda_weak
 
-        # 10. Logging
         if hasattr(self, "_metrics"):
             mode = "train" if self.model.training else "eval"
             if s_count > 0:
@@ -457,7 +444,6 @@ class DWCAL_GRPO_Trainer(GRPOTrainer):
             self._metrics[mode].setdefault("pairs/num_strong", []).append(s_count)
             self._metrics[mode].setdefault("pairs/num_micro", []).append(m_count)
 
-        # 11. Cleanup
         del rewards, input_ids_all, attention_mask_all, prompt_lens_all, comp_lengths_all
         del unique_input_ids, unique_attention_mask, unique_labels, seq_logps_unique
         if 'ref_seq_logps_unique' in locals():
