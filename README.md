@@ -1,16 +1,14 @@
 <div align="center">
 
-# [cite_start]DWCAL-GRPO: Integrating Dual Preference Mechanisms into GRPO [cite: 1]
+# DWCAL-GRPO: Integrating Dual Preference Mechanisms into GRPO [cite: 1]
 
 </div>
 
 ---
 
-## 💡 什么是 DWCAL-GRPO?
+## 💡 what is DWCAL-GRPO?
 
-[cite_start]**DWCAL-GRPO** (Dynamically Weighted Contrastive Advantage Learning) 是一种针对大语言模型数学推理能力优化的增强型强化学习框架 [cite: 1, 19, 588]。
-
-[cite_start]该框架在标准 **GRPO** (Group Relative Policy Optimization) 的基础上，引入了**双重偏好机制**，旨在更有效地利用组内排序信息 [cite: 56, 137, 589][cite_start]。通过这种方式，它能够精细化推理路径的区分度，提供区分“接近正确”的推导与“根本性错误”轨迹所需的粒度 [cite: 46, 137, 582, 589]。
+DWCAL-GRPO (Dynamically Weighted Contrastive Advantage Learning) is an enhanced reinforcement learning framework optimized for the mathematical reasoning capabilities of large language models. Building upon the standard GRPO framework , it integrates a dual preference mechanism designed to more effectively leverage intra-group ranking information. This approach aims to refine the differentiation of reasoning paths, providing the granularity necessary to distinguish between nearly correct derivations and fundamentally flawed trajectories.
 
 ---
 
