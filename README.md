@@ -6,9 +6,9 @@
 
 ---
 
-## 🌟 What is AMIR-GRPO?
+##  What is DWCAL-GRPO?
 
-AMIR-GRPO extends GRPO with an implicit DPO-style contrastive regularizer derived directly from intra-rollout reward rankings, requiring no additional annotations.
+DWCAL-GRPO (Dynamically Weighted Contrastive Advantage Learning) is an enhanced reinforcement learning framework optimized for the mathematical reasoning capabilities of large language models. Building upon the standard GRPO framework , it integrates a dual preference mechanism designed to more effectively leverage intra-group ranking information. This approach aims to refine the differentiation of reasoning paths, providing the granularity necessary to distinguish between nearly correct derivations and fundamentally flawed trajectories.
 
 ---
 
