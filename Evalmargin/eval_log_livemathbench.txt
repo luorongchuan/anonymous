@@ -1,0 +1,118 @@
+nohup: ignoring input
+W0321 21:13:50.963000 2083803 site-packages/torch/distributed/run.py:774] 
+W0321 21:13:50.963000 2083803 site-packages/torch/distributed/run.py:774] *****************************************
+W0321 21:13:50.963000 2083803 site-packages/torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0321 21:13:50.963000 2083803 site-packages/torch/distributed/run.py:774] *****************************************
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+[Distributed] Initialized with 4 GPUs. Local Rank: 0
+Loading dataset: livemathbench ...
+[Rank 0] Total: 46, Split: 12/GPU
+[Rank 0] This rank processing: [0:12] (12 samples)
+[Rank 0] Loading model to cuda:0 ...
+Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:11<01:10, 11.73s/it]Loading checkpoint shards:  14%|█▍        | 1/7 [00:10<01:05, 10.90s/it]Loading checkpoint shards:  14%|█▍        | 1/7 [00:04<00:26,  4.35s/it]Loading checkpoint shards:  14%|█▍        | 1/7 [00:09<00:55,  9.26s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:15<00:35,  7.10s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:13<00:30,  6.02s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:14<00:33,  6.74s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:08<00:20,  4.05s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:17<00:19,  4.76s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:10<00:13,  3.30s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:18<00:20,  5.02s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:15<00:17,  4.46s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:18<00:10,  3.59s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:12<00:08,  2.70s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:17<00:10,  3.38s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:19<00:11,  3.77s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:20<00:05,  2.78s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:13<00:04,  2.23s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:19<00:05,  2.77s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:21<00:06,  3.02s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:21<00:02,  2.19s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:14<00:01,  1.83s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:20<00:02,  2.22s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:22<00:02,  2.38s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:16<00:00,  1.76s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:16<00:00,  2.35s/it]
+Loading checkpoint shards: 100%|██████████| 7/7 [00:23<00:00,  1.97s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:23<00:00,  3.42s/it]
+Loading checkpoint shards: 100%|██████████| 7/7 [00:23<00:00,  2.04s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:23<00:00,  3.29s/it]
+Loading checkpoint shards: 100%|██████████| 7/7 [00:21<00:00,  1.88s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:21<00:00,  3.05s/it]
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+[Rank 0] Starting evaluation...
+Rank 0 Eval:   0%|          | 0/12 [00:00<?, ?it/s]Rank 0 Eval:  17%|█▋        | 2/12 [00:56<04:44, 28.48s/it]Rank 0 Eval:  33%|███▎      | 4/12 [02:16<04:41, 35.20s/it]Rank 0 Eval:  50%|█████     | 6/12 [04:01<04:18, 43.15s/it]WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Rank 0 Eval:  67%|██████▋   | 8/12 [05:57<03:15, 48.85s/it]WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Rank 0 Eval:  83%|████████▎ | 10/12 [07:50<01:43, 51.63s/it]Timeout during comparison
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Timeout during comparison
+Rank 0 Eval: 100%|██████████| 12/12 [09:42<00:00, 53.09s/it]Rank 0 Eval: 100%|██████████| 12/12 [09:42<00:00, 48.51s/it]
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[Rank 0] Gathered results from 4 GPUs. Total problems: 46
+
+========================================
+=== Preference Margin Results ===
+========================================
+
+[Diagnosis] Total Problems: 46
+  - All Correct (8/8): 9 problems -> Margin undefined (no wrong samples)
+  - All Wrong   (0/8): 22 problems -> Margin undefined (no correct samples)
+  - Mixed Results:     15 problems -> Margin computable
+
+>>> Computing margins for 15 mixed problems...
+
+--- Margin per problem (First 20 shown) ---
+Problem #0: margin = 0.2602
+Problem #1: margin = -0.0150
+Problem #2: margin = -0.0857
+Problem #3: margin = 0.0666
+Problem #4: margin = -0.0845
+Problem #5: margin = 0.1357
+Problem #6: margin = 0.0329
+Problem #7: margin = 0.1241
+Problem #8: margin = 0.0662
+Problem #9: margin = 0.0385
+Problem #10: margin = -0.1537
+Problem #11: margin = -0.0879
+Problem #12: margin = 0.0343
+Problem #13: margin = -0.0688
+Problem #14: margin = 0.0546
+
+>>> Average Preference Margin: 0.0212
+>>> Std Dev of Margin: 0.1036
+
+========================================
+=== Pass@k Results ===
+========================================
+Total Evaluation Problems: 46
+pass@1: 31.52%
+pass@2: 37.50%
+pass@4: 44.10%
+----------------------------------------
+[Rank 0] Process group destroyed.

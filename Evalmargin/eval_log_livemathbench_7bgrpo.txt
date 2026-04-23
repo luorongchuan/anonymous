@@ -1,0 +1,96 @@
+nohup: ignoring input
+W0322 10:15:29.670000 3270568 site-packages/torch/distributed/run.py:774] 
+W0322 10:15:29.670000 3270568 site-packages/torch/distributed/run.py:774] *****************************************
+W0322 10:15:29.670000 3270568 site-packages/torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0322 10:15:29.670000 3270568 site-packages/torch/distributed/run.py:774] *****************************************
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+cu128 for torchao version 0.16.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+[Distributed] Initialized with 3 GPUs. Local Rank: 0
+Loading dataset: livemathbench ...
+[Rank 0] Total: 46, Split: 16/GPU
+[Rank 0] This rank processing: [0:16] (16 samples)
+[Rank 0] Loading model to cuda:0 ...
+Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:01<00:06,  1.08s/it]Loading checkpoint shards:  14%|█▍        | 1/7 [00:01<00:07,  1.21s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:02<00:06,  1.25s/it]Loading checkpoint shards:  14%|█▍        | 1/7 [00:01<00:10,  1.81s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:02<00:06,  1.32s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:03<00:04,  1.22s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:03<00:08,  1.64s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:04<00:05,  1.37s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:05<00:03,  1.29s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:04<00:06,  1.53s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:05<00:04,  1.43s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:06<00:02,  1.40s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:06<00:04,  1.51s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:07<00:03,  1.53s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:07<00:01,  1.29s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:08<00:00,  1.06s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:08<00:00,  1.18s/it]
+Loading checkpoint shards:  86%|████████▌ | 6/7 [00:08<00:01,  1.41s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:08<00:03,  1.65s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:09<00:00,  1.16s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:09<00:00,  1.30s/it]
+Loading checkpoint shards:  86%|████████▌ | 6/7 [00:09<00:01,  1.52s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:10<00:00,  1.27s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:10<00:00,  1.45s/it]
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+[Rank 0] Starting evaluation...
+Rank 0 Eval:   0%|          | 0/16 [00:00<?, ?it/s]/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+Rank 0 Eval:  12%|█▎        | 2/16 [00:53<06:13, 26.70s/it]WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Rank 0 Eval:  25%|██▌       | 4/16 [02:36<08:15, 41.32s/it]Rank 0 Eval:  38%|███▊      | 6/16 [04:20<07:41, 46.18s/it]Timeout during comparison
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Rank 0 Eval:  50%|█████     | 8/16 [06:11<06:38, 49.78s/it]WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Rank 0 Eval:  62%|██████▎   | 10/16 [08:03<05:12, 52.14s/it]Rank 0 Eval:  75%|███████▌  | 12/16 [09:57<03:35, 53.76s/it]WARNING: Error in configuration: macro '\frac' failed its substitution!
+WARNING: Error in configuration: macro '\frac' failed its substitution!
+Rank 0 Eval:  88%|████████▊ | 14/16 [11:51<01:49, 54.82s/it]Rank 0 Eval: 100%|██████████| 16/16 [13:46<00:00, 55.69s/it]Rank 0 Eval: 100%|██████████| 16/16 [13:46<00:00, 51.66s/it]
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/luorongchuan/miniconda3/envs/AMIR-GRPO/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[Rank 0] Gathered results from 3 GPUs. Total problems: 46
+
+========================================
+=== Preference Margin Results ===
+========================================
+Final Margins: [0.17864170670509338, nan, nan, nan, nan, nan, nan, -0.07942764461040497, nan, nan, nan, nan, nan, nan, 0.07094145672661922, nan, nan, nan, nan, nan, nan, 0.1338031206812177, nan, nan, -0.08266856273015344, nan, -0.11327965656916295, 0.16951976929392132, -0.08515362228666035, 0.13761236270268756, 0.11301561196645105, nan, nan, nan, -0.00590149313211441, nan, nan, -0.07712541307721821, nan, -0.059122125307718876, nan, 0.005561028208051377, nan, -0.030686076198305434, -0.14334356784820557, nan]
+Valid Margins (non-NaN): [0.17864170670509338, -0.07942764461040497, 0.07094145672661922, 0.1338031206812177, -0.08266856273015344, -0.11327965656916295, 0.16951976929392132, -0.08515362228666035, 0.13761236270268756, 0.11301561196645105, -0.00590149313211441, -0.07712541307721821, -0.059122125307718876, 0.005561028208051377, -0.030686076198305434, -0.14334356784820557]
+
+[Diagnosis] Total Problems: 46
+  - All Correct (8/8): 8 problems -> Margin undefined (no wrong samples)
+  - All Wrong   (0/8): 22 problems -> Margin undefined (no correct samples)
+  - Mixed Results:     16 problems -> Margin computable
+
+>>> Computing margins for 16 mixed problems...
+
+--- Margin per problem (First 20 shown) ---
+Problem #0: margin = 0.1786
+Problem #1: margin = -0.0794
+Problem #2: margin = 0.0709
+Problem #3: margin = 0.1338
+Problem #4: margin = -0.0827
+Problem #5: margin = -0.1133
+Problem #6: margin = 0.1695
+Problem #7: margin = -0.0852
+Problem #8: margin = 0.1376
+Problem #9: margin = 0.1130
+Problem #10: margin = -0.0059
+Problem #11: margin = -0.0771
+Problem #12: margin = -0.0591
+Problem #13: margin = 0.0056
+Problem #14: margin = -0.0307
+Problem #15: margin = -0.1433
+
+>>> Average Preference Margin: 0.0083
+>>> Std Dev of Margin: 0.1056
+
+========================================
+=== Pass@k Results ===
+========================================
+Total Evaluation Problems: 46
+pass@1: 31.25%
+pass@2: 37.81%
+pass@4: 44.66%
+----------------------------------------
+[Rank 0] Process group destroyed.
