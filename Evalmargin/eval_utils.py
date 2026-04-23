@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import torch.distributed as dist 
 from typing import List, Optional, Sequence, Tuple, Union, Dict
-
+import numpy as np
 import torch
 from tqdm import tqdm
 from transformers import (
@@ -105,12 +105,12 @@ def _apply_chat_template_if_available(
 ) -> str:
   
     if hasattr(tokenizer, "apply_chat_template") and not isinstance(prompt, str):
-        # Expecting a list of chat messages (OpenAI-style dicts)
+
         return tokenizer.apply_chat_template(
             prompt, tokenize=False, add_generation_prompt=True
         )
     elif hasattr(tokenizer, "apply_chat_template") and isinstance(prompt, str):
-        # Some tokenizers can still accept raw strings; keep your original behavior
+
         return tokenizer.apply_chat_template(
             prompt, tokenize=False, add_generation_prompt=True
         )
@@ -155,16 +155,10 @@ def generate_batch(
         )
 
     del enc
-
     outputs = outputs.to("cpu")
-
-
     decoded = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-
     del outputs
-
     return decoded
-
 
 def evaluate_model_batched(
     model: PreTrainedModel,
@@ -178,28 +172,22 @@ def evaluate_model_batched(
     num_samples: int = 8,
     ks: Sequence[int] = (1, 2, 4),
 ) -> Dict[int, float]:
-    import numpy as np  # 确保导入 numpy
-
     device = _get_device(device)
-    
-    # 确保模型在正确的设备上
+
     if next(model.parameters()).device.type != device.type:
         model.to(device)
     model.eval()
 
-    # 检查是否分布式环境
     is_distributed = dist.is_initialized()
     rank = dist.get_rank() if is_distributed else 0
     world_size = dist.get_world_size() if is_distributed else 1
 
     buf_prompts: List[Union[str, Sequence[dict]]] = []
     buf_gts: List[Union[str, float, int, list]] = []
-    
-    # 存储结果
-    per_problem_correct_counts: List[int] = []
-    per_problem_margins: List[float] = []  # 新增：存储每个问题的 margin
 
-    # 进度条设置
+    per_problem_correct_counts: List[int] = []
+    per_problem_margins: List[float] = []  
+
     iterator = enumerate(dataset)
     if progress and rank == 0:
         try:
@@ -217,7 +205,6 @@ def evaluate_model_batched(
         buf_prompts.append(sample["prompt"])
         buf_gts.append(sample["answer"])
 
-        # 判断是否刷新批次
         flush = (
             len(buf_prompts) == batch_size
             or (max_samples is not None and i + 1 == max_samples)
@@ -243,7 +230,6 @@ def evaluate_model_batched(
         
         batch_trajectories = [] 
 
-        # 2. 判断对错并收集轨迹
         for k_idx in range(num_prompts):
             gt = buf_gts[k_idx]
             start_index = k_idx * num_samples
@@ -253,7 +239,6 @@ def evaluate_model_batched(
             correct_count = 0
             
             for pred_text in ensemble_outputs:
-                # 假设 reward == 1.0 表示正确
                 _, reward = answer_tag_reward_fn_for_orz(pred_text, gt, fast=False)
                 is_correct = (reward == 1.0)
                 
@@ -286,11 +271,9 @@ def evaluate_model_batched(
 
             pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id
             shift_mask = (shift_labels != pad_token_id).float()
-            
-            # 计算 log_probs
+
             log_probs = torch.nn.functional.log_softmax(shift_logits, dim=-1)
             
-
             token_log_probs = log_probs.gather(2, shift_labels.unsqueeze(-1)).squeeze(-1)
             
             token_log_probs = token_log_probs * shift_mask
@@ -312,7 +295,6 @@ def evaluate_model_batched(
                 else:
                     problem_wrong_lps[p_idx].append(ln_lp)
 
-            # 计算 Margin
             for k_idx in range(num_prompts):
                 correct_lps = problem_correct_lps[k_idx]
                 wrong_lps = problem_wrong_lps[k_idx]
@@ -356,9 +338,6 @@ def evaluate_model_batched(
         
         dist.barrier()
 
-    # ----------------------------
-    # 计算与打印 (仅 Rank 0)
-    # ----------------------------
     if rank == 0:
         if is_distributed:
             final_counts = [c for sublist in all_correct_counts for c in sublist]
@@ -369,18 +348,16 @@ def evaluate_model_batched(
             final_margins = per_problem_margins
             print(f"[Single GPU] Total problems: {len(final_counts)}")
 
-        # --- 打印 Preference Margin (带诊断信息) ---
         print("\n" + "="*40)
         print("=== Preference Margin Results ===")
         print("="*40)
-        
-        # 过滤掉 NaN (全对或全错的问题)
+
         print(f"Final Margins: {final_margins}")
         valid_margins = [m for m in final_margins if not math.isnan(m)]
         print(f"Valid Margins (non-NaN): {valid_margins}")
-        # 【新增诊断】统计全对和全错的问题数量
+
         all_correct_count = sum(1 for m in final_margins if math.isnan(m) and final_counts[final_margins.index(m)] == num_samples)
-        # 上面的 index 方法在分布式展平后可能不准，我们用更稳妥的方式重新统计
+
         stats_all_correct = 0
         stats_all_wrong = 0
         stats_mixed = 0
@@ -402,7 +379,7 @@ def evaluate_model_batched(
             print(f"\n>>> Computing margins for {len(valid_margins)} mixed problems...")
             
             print("\n--- Margin per problem (First 20 shown) ---")
-            # 只显示前 40 个，避免刷屏
+
             display_limit = min(40, len(valid_margins))
             for i in range(display_limit):
                 m = valid_margins[i]
@@ -418,8 +395,7 @@ def evaluate_model_batched(
             print("\n❌ No valid margins could be computed!")
             print("   Reason: Every single problem was either 100% correct or 0% correct.")
             print("   This often happens with small datasets or extreme model performance.")
-            
-            # 【强制调试】打印前 5 个问题的详细情况
+
             print("\n[Debug] Detailed breakdown of first 5 problems:")
             for i in range(min(5, len(final_counts))):
                 c = final_counts[i]
@@ -431,7 +407,6 @@ def evaluate_model_batched(
             print("   2. If 'All Right' is high: The dataset is too easy, or the grader is too loose.")
             print("   3. Try increasing --temperature to 1.0 or 1.2 to force more diversity/errors.")
 
-        # --- 打印 Pass@k ---
         print("\n" + "="*40)
         print("=== Pass@k Results ===")
         print("="*40)
