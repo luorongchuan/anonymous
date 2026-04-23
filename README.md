@@ -1,6 +1,6 @@
 <div align="center">
 
-# AMIR-GRPO: Inducing Implicit Preference Signals into GRPO
+# DWCAL-GRPO: Integrating Dual Preference Mechanisms into GRPO
 
 <p>
   <a href="https://amirhosseinyari2002.github.io/"><b>Amir Hossein Yari</b></a>
