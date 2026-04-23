@@ -7,42 +7,9 @@ from dataclasses import dataclass
 from dataclasses import asdict, is_dataclass
 from typing import Optional
 
-# ------------------------------
-# Dataclass model
-# ------------------------------
-
-
 @dataclass
 class CoreConfig:
-    """Core model and dataset configuration.
-
-    Parameters
-    ----------
-    model_name:
-        Hugging Face model ID or local path to the base model.
-    lora_rank:
-        LoRA rank used for low-rank adapters.
-    max_seq_length:
-        Maximum packed sequence length for training and generation.
-    load_in_4bit:
-        Flag indicating whether to load the model in 4-bit quantization
-        (1 = True, 0 = False).
-    model_dir:
-        Output directory for checkpoints, logs, and configuration files.
-    dataset_name:
-        Name of the training dataset.
-    dataset_split:
-        Split used for training (e.g., ``"train"``).
-    test_dataset_split:
-        Split used for evaluation (e.g., ``"test"``).
-    trainer_type:
-        Trainer variant: ``"grpo"`` for vanilla GRPO, or ``"amir_grpo"`` for
-        GRPO with DPO regularization.
-    calibration:
-        If ``True``, enable calibration-aware rewards (e.g. requiring
-        ``<analysis>`` and ``<confidence>`` fields in the output).
-    """
-
+   
     model_name: str = "Qwen/Qwen2.5-7B-Instruct"
     lora_rank: int = 16
     max_seq_length: int = 2048
@@ -59,26 +26,7 @@ class CoreConfig:
 
 @dataclass
 class TrainingConfig:
-    """General trainer hyperparameters.
-
-    Parameters
-    ----------
-    learning_rate:
-        Base learning rate for the optimizer.
-    weight_decay:
-        Weight decay coefficient (e.g. for AdamW).
-    max_grad_norm:
-        Gradient clipping value; 0 disables clipping.
-    per_device_train_batch_size:
-        Micro-batch size per device.
-    gradient_accumulation_steps:
-        Number of steps to accumulate gradients before an optimizer step.
-    max_steps:
-        Total number of optimizer steps.
-    seed:
-        Global random seed for reproducibility.
-    """
-
+   
     learning_rate: float = 5e-6
     weight_decay: float = 0.1
     max_grad_norm: float = 0.1
@@ -90,22 +38,7 @@ class TrainingConfig:
 
 @dataclass
 class SchedulerOptimConfig:
-    """Scheduler and optimizer configuration.
-
-    Parameters
-    ----------
-    lr_scheduler_type:
-        Scheduler type (e.g. ``"cosine"``, ``"linear"``, ``"constant"``).
-    warmup_ratio:
-        Fraction of total steps used for learning-rate warmup.
-    optim:
-        Optimizer identifier (e.g. ``"adamw"``, ``"adamw_8bit"``).
-    adam_beta1:
-        Adam / AdamW β1 parameter.
-    adam_beta2:
-        Adam / AdamW β2 parameter.
-    """
-
+  
     lr_scheduler_type: str = "cosine"
     warmup_ratio: float = 0.1
     optim: str = "adamw_8bit"
@@ -115,17 +48,7 @@ class SchedulerOptimConfig:
 
 @dataclass
 class GenerationConfig:
-    """Generation settings used during GRPO rollouts.
-
-    Parameters
-    ----------
-    num_generations:
-        Number of sampled completions per prompt during rollout.
-    max_prompt_length:
-        Maximum prompt token length for generation.
-    max_completion_length:
-        Maximum completion token length for generation.
-    """
+   
 
     num_generations: int = 8
     max_prompt_length: int = 1024
@@ -134,27 +57,7 @@ class GenerationConfig:
 
 @dataclass
 class AlgorithmConfig:
-    """GRPO loss-specific settings.
-
-    Parameters
-    ----------
-    loss_type:
-        Identifier for the underlying loss variant (e.g. ``"grpo"``,
-        ``"dr_grpo"``, ``"dapo"``).
-    epsilon:
-        Lower clipping factor for advantage normalization.
-    epsilon_high:
-        Upper clipping factor for advantage normalization.
-    mask_truncated_completions:
-        If non-zero, truncation-affected completions are masked from the loss.
-    scale_rewards:
-        Strategy for normalizing or scaling rewards (e.g. ``"group"``,
-        ``"batch"``, ``"none"``).
-    importance_sampling_level:
-        Granularity of importance sampling, typically ``"token"`` or
-        ``"sequence"``.
-    """
-
+   
     loss_type: str = "grpo"
     epsilon: float = 0.20
     epsilon_high: float = 0.20
@@ -165,59 +68,32 @@ class AlgorithmConfig:
 
 @dataclass
 class DPOConfig:
-    """DPO integration parameters including DWCAL extensions.
+   
 
-    These parameters are used when ``trainer_type == "amir_grpo"`` and govern
-    the strength and structure of the DPO regularization term.
-    """
-
-    # [Existing] Core DPO Params
     lambda_strong: float = 0.01
-    reward_margin: float = 2.0  # 统一默认值为 2.0
+    reward_margin: float = 2.0  
     beta_strong: float = 0.2
-    pair_mode: str = "all"      # 已修正为 pair_mode
+    pair_mode: str = "all"      
     max_pairs_per_group: Optional[int] = None
     ref_free: bool = True
-    
-    # [NEW] DWCAL Strong Branch Params
+
     alpha_rank: float = 0.5
     alpha_len: float = 0.5
     alpha_group: float = 0.5
     w_max: float = 3.5
     group_quality_threshold: float = 0.5
-    
-    # [NEW] DWCAL Micro Branch Params
+
     weak_margin: float = 0.15
     lambda_weak: float = 0.01
     weak_warmup_steps: int = 100
     beta_weak: float = 0.05
-    
-    # [NEW] Optimization Param
+
     dpo_chunk_size: int = 8
 
 
 @dataclass
 class LoggingConfig:
-    """Logging, checkpointing, and Hub integration settings.
-
-    Parameters
-    ----------
-    logging_steps:
-        Log metrics every N optimizer steps.
-    save_steps:
-        Save a checkpoint every N optimizer steps.
-    report_to:
-        Reporting backend, e.g. ``"wandb"``, ``"tensorboard"``, or ``"none"``.
-    wandb_api_key:
-        Optional Weights & Biases API key for authentication.
-    hf_token:
-        Optional Hugging Face Hub token used for pushing models.
-    hf_user:
-        Optional Hugging Face username / organization for the target repo.
-    hf_private:
-        If ``True``, create or use a private model repo on the Hub.
-    """
-
+  
     logging_steps: int = 1
     save_steps: int = 50
     report_to: str = "wandb"
@@ -226,26 +102,7 @@ class LoggingConfig:
 
 @dataclass
 class Config:
-    """Top-level configuration wrapper.
-
-    Attributes
-    ----------
-    core:
-        Core model and dataset configuration.
-    training:
-        Training hyperparameters.
-    sched_optim:
-        Learning-rate scheduler and optimizer configuration.
-    generation:
-        Generation settings used during GRPO rollouts.
-    algorithm:
-        GRPO loss-specific parameters.
-    dpo:
-        DPO integration parameters when using ``trainer_type="amir_grpo"``.
-    logging:
-        Logging, checkpointing, and Hub integration configuration.
-    """
-
+  
     core: CoreConfig
     training: TrainingConfig
     sched_optim: SchedulerOptimConfig
@@ -254,30 +111,8 @@ class Config:
     dpo: DPOConfig
     logging: LoggingConfig
 
-
-# ------------------------------
-# Parser construction
-# ------------------------------
-
-
 def _positive_int(value: str) -> int:
-    """Convert a string to a positive integer for argparse.
-
-    Parameters
-    ----------
-    value:
-        String representing an integer.
-
-    Returns
-    -------
-    i:
-        Parsed integer value.
-
-    Raises
-    ------
-    argparse.ArgumentTypeError
-        If the parsed integer is not strictly positive.
-    """
+  
     i = int(value)
     if i <= 0:
         raise argparse.ArgumentTypeError("Value must be > 0")
@@ -285,23 +120,7 @@ def _positive_int(value: str) -> int:
 
 
 def _non_negative_float(value: str) -> float:
-    """Convert a string to a non-negative float for argparse.
-
-    Parameters
-    ----------
-    value:
-        String representing a float.
-
-    Returns
-    -------
-    f:
-        Parsed float value.
-
-    Raises
-    ------
-    argparse.ArgumentTypeError
-        If the parsed float is negative.
-    """
+   
     f = float(value)
     if f < 0:
         raise argparse.ArgumentTypeError("Value must be >= 0")
@@ -309,21 +128,9 @@ def _non_negative_float(value: str) -> float:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Create and return the CLI argument parser.
-
-    The resulting parser exposes grouped options mirroring the configuration
-    dataclasses, and can be used both for direct parsing and for introspection
-    (e.g. in notebooks).
-
-    Returns
-    -------
-    parser:
-        An :class:`argparse.ArgumentParser` instance configured with all
-        supported options.
-    """
+   
     parser = argparse.ArgumentParser(description="GRPO / GRPO+DPO Training CLI")
 
-    # --- Core / Model & Data ---
     core = parser.add_argument_group("Core / Model & Data")
     core.add_argument(
         "--model_name",
@@ -432,7 +239,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--seed", type=int, default=0, help="Random seed for reproducibility."
     )
 
-    # --- Scheduler & Optimizer ---
     so = parser.add_argument_group("Scheduler & Optimizer")
     so.add_argument(
         "--lr_scheduler_type",
@@ -453,7 +259,6 @@ def build_parser() -> argparse.ArgumentParser:
     so.add_argument("--adam_beta1", type=float, default=0.9, help="Adam β1.")
     so.add_argument("--adam_beta2", type=float, default=0.99, help="Adam β2.")
 
-    # --- Generation ---
     gen = parser.add_argument_group("Generation (for GRPO rollouts)")
     gen.add_argument(
         "--num_generations",
@@ -474,7 +279,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Maximum completion token length for generation.",
     )
 
-    # --- RL Algorithm ---
     algo = parser.add_argument_group("RL Algorithm")
     algo.add_argument(
         "--loss_type",
@@ -513,7 +317,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Determines the granularity at which importance sampling is applied. Options: ['token', 'sequence'].",
     )
 
-    # --- DPO Integration ---
     dpo = parser.add_argument_group(
         "DPO Integration (only if trainer_type='amir_grpo')"
     )
@@ -553,7 +356,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Whether to use the policy as its own reference (true/false).",
     )
 
-    # [NEW] DWCAL Strong Branch Arguments
     dpo.add_argument(
         "--alpha_rank", type=float, default=0.5,
         help="Weight for rank-based quality in strong branch."
@@ -575,7 +377,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Threshold tau for group quality calculation."
     )
 
-    # [NEW] DWCAL Micro Branch Arguments
     dpo.add_argument(
         "--weak_margin", type=float, default=0.15,
         help="Reward gap threshold for micro-preference pairs."
@@ -592,14 +393,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--beta_weak", type=float, default=0.05,
         help="Inverse temperature for micro branch DPO loss."
     )
-    
-    # [NEW] Chunk size for memory efficiency
+
     dpo.add_argument(
         "--dpo_chunk_size", type=int, default=8,
         help="Chunk size for computing logps in DPO regularization to save memory."
     )
 
-    # --- Logging & Checkpointing ---
     log = parser.add_argument_group("Logging & Checkpointing")
     log.add_argument(
         "--logging_steps",
@@ -629,18 +428,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _namespace_to_config(ns: argparse.Namespace) -> Config:
-    """Convert an argparse namespace into a typed :class:`Config` instance.
-
-    Parameters
-    ----------
-    ns:
-        The namespace returned by :func:`argparse.ArgumentParser.parse_args`.
-
-    Returns
-    -------
-    config:
-        A fully-populated :class:`Config` object matching the CLI arguments.
-    """
+ 
     core = CoreConfig(
         model_name=ns.model_name,
         lora_rank=ns.lora_rank,
@@ -704,9 +492,6 @@ def _namespace_to_config(ns: argparse.Namespace) -> Config:
         lambda_weak=ns.lambda_weak,
         weak_warmup_steps=ns.weak_warmup_steps,
         beta_weak=ns.beta_weak,
-        # 注意：dpo_chunk_size 不需要传进 DPOConfig 数据类，除非你把它加到数据类里
-        # 如果 train.py 直接从 ns 读或者 getattr(args.dpo)，则不需要加到这里。
-        # 但为了完整性，建议加到数据类并在这里传递。
     )
 
     logging = LoggingConfig(
@@ -727,20 +512,7 @@ def _namespace_to_config(ns: argparse.Namespace) -> Config:
 
 
 def parse_args(argv: Optional[list[str]] = None) -> Config:
-    """Parse CLI arguments and return a typed :class:`Config`.
-
-    Parameters
-    ----------
-    argv:
-        Optional list of argument strings. If ``None``, arguments are taken
-        from ``sys.argv``.
-
-    Returns
-    -------
-    config:
-        The fully-populated :class:`Config` object constructed from CLI
-        arguments.
-    """
+  
 
     parser = build_parser()
     ns = parser.parse_args(argv)
@@ -748,37 +520,12 @@ def parse_args(argv: Optional[list[str]] = None) -> Config:
 
 
 def get_parser() -> argparse.ArgumentParser:
-    """Return an :class:`ArgumentParser` matching the original CLI.
-
-    This is useful when you want to inspect or extend the parser without
-    triggering parsing immediately.
-
-    Returns
-    -------
-    parser:
-        An :class:`argparse.ArgumentParser` instance.
-    """
-
+ 
     return build_parser()
 
 
 def save_config_files(args: Config, out_dir: Path) -> None:
-    """Serialize the full configuration to JSON in the given directory.
-
-    Parameters
-    ----------
-    args:
-        The configuration object to serialize. If a dataclass instance is
-        provided, it is converted via :func:`dataclasses.asdict`.
-    out_dir:
-        Target directory where the configuration file will be written.
-
-    Returns
-    -------
-    None
-        This function is used for its side effect of writing a JSON file.
-    """
-
+   
     payload = asdict(args) if is_dataclass(args) else args
     json_path = out_dir / "config.json"
     with open(json_path, "w", encoding="utf-8") as f:
