@@ -1,21 +1,17 @@
-#!/bin/bash
-# ================= 修改点 1: 强制只使用第 0 号显卡 (单卡) =================
 export CUDA_VISIBLE_DEVICES=4
 
-# 1. 设置镜像环境变量 (根据网络情况可选)
 export HF_ENDPOINT=https://hf-mirror.com
 export HF_HUB_DISABLE_XET=1
 export HF_HUB_ETAG_TIMEOUT=60
 export HF_HUB_DOWNLOAD_TIMEOUT=600
-# export HF_DEBUG=1 # 调试时开启，正常运行可注释
 
-# 2. 启动训练
+
 python -m Train.train \
   --model_name ./Qwen2.5-3B-Instruct \
   --lora_rank 16 \
   --max_seq_length 2048 \
   --load_in_4bit 0 \
-  --model_dir /home/luorongchuan/workspace_134/AMIR-GRPO-master-copy/train_model/Qwen3B-bs0.1-bw0.05 \
+  --model_dir ./Qwen2.5-3B-Instruct-directory \
   --dataset_name gsm8k \
   --dataset_split train \
   --trainer_type dwcal_grpo \
