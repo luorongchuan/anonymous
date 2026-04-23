@@ -5,26 +5,21 @@ import json
 import sys
 from config import parse_args
 from case_analysize.eval_utils import evaluate_model_batched, load_model_and_tokenizer
-# 根据你的实际数据集导入函数
 from Data.data import get_amc23_questions, get_aime25_questions, get_gsm8k_questions 
 
 def main() -> None:
     args = parse_args()
-    
-    # 强制单卡模式
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[Run Mode] Single GPU: {device}")
 
-    # 加载模型
     model_dir = Path(args.core.model_dir).expanduser().as_posix()
     model, tokenizer = load_model_and_tokenizer(
         directory_path=model_dir,
-        hf_token="HF_TOKEN", # 替换为你的真实 Token
+        hf_token="HF_TOKEN", 
         device=device,
         load_in_4bit=bool(args.core.load_in_4bit)
     )
 
-    # 选择数据集
     ds_name = args.core.dataset_name.lower()
     if ds_name == "amc23":
         test_dataset = get_amc23_questions(args.core.test_dataset_split)
@@ -34,8 +29,7 @@ def main() -> None:
         test_dataset = get_gsm8k_questions(args.core.test_dataset_split)
 
     print(f"Starting detailed analysis on {len(test_dataset)} problems...")
-    
-    # 执行评估
+
     results = evaluate_model_batched(
         model=model,
         tokenizer=tokenizer,
@@ -44,7 +38,6 @@ def main() -> None:
         num_samples=8
     )
 
-    # 最终结果落地
     output_path = f"case_analysis_DWCAL_{ds_name}.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=4)
