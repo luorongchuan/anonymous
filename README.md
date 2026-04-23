@@ -27,3 +27,16 @@ DWCAL-GRPO (Dynamically Weighted Contrastive Advantage Learning) is an enhanced 
 ├── requirements.txt   # Dependencies
 ├── run.sh             # One-click run script
 └── README.md          # This file
+
+
+## 🚀 Usage
+
+nohup bash run.sh &
+
+## Evaluation
+python -m Eval.eval \
+  --dataset_name olympiadbench \
+  --model_dir ./trained_model_directory\
+  --test_dataset_split test\
+  --load_in_4bit 0 > ./Eva_olympiadbench.txt 2>&1 &
+
