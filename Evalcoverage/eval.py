@@ -31,9 +31,6 @@ def parse_args_cli():
 def main():
     args = parse_args_cli()
 
-    # ----------------------------
-    # 1. 初始化分布式环境
-    # ----------------------------
     rank = 0
     world_size = 1
     local_rank = 0
@@ -59,9 +56,6 @@ def main():
         if is_main_process:
             print(f"[Single GPU] Running on {device}")
 
-    # ----------------------------
-    # 2. 加载数据集
-    # ----------------------------
     if is_main_process:
         print(f"Loading dataset: {args.dataset_name} ...")
 
@@ -87,9 +81,6 @@ def main():
     else:
         raise ValueError(f"Unknown dataset: {args.dataset_name}")
 
-    # ----------------------------
-    # 3. 数据分片（分布式）
-    # ----------------------------
     num_samples = len(test_dataset)
     if world_size > 1:
         samples_per_gpu = (num_samples + world_size - 1) // world_size
@@ -105,9 +96,6 @@ def main():
         if is_main_process:
             print(f"[Single GPU] Processing all {num_samples} samples")
 
-    # ----------------------------
-    # 4. 加载模型
-    # ----------------------------
     if is_main_process:
         print(f"Loading model from {args.model_dir} ...")
     model, tokenizer = load_model_and_tokenizer(
@@ -117,10 +105,7 @@ def main():
         load_in_4bit=bool(args.load_in_4bit)
     )
     model.eval()
-    
-    # ----------------------------
-    # 5. 评估
-    # ----------------------------
+
     num_rollouts = 16
     correct_counts = evaluate_model_batched(
         model=model,
@@ -132,25 +117,16 @@ def main():
         num_samples=num_rollouts
     )
 
-    # ----------------------------
-    # 6. 保存 correct_counts
-    # ----------------------------
     if is_main_process:
         out_file = f"correct_counts.json"
         with open(out_file, "w") as f:
             json.dump(correct_counts, f)
         print(f"correct_counts saved to {out_file}")
 
-    # ----------------------------
-    # 7. 可解判定（可选）
-    # ----------------------------
     solvable = [c > 0 for c in correct_counts]
     if is_main_process:
         print("Solvable dict prepared. Total solvable:", sum(solvable))
 
-    # ----------------------------
-    # 8. 清理分布式
-    # ----------------------------
     if world_size > 1:
         dist.destroy_process_group()
         if is_main_process:
